@@ -94,7 +94,7 @@ export class CodeLensProvider {
             definitionNode,
             this.forest,
             this.imports,
-          );
+          ).filter(a => a.type === "reference");
 
           let refLocations: Location[] = [];
           if (references) {

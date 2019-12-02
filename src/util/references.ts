@@ -4,13 +4,23 @@ import { IImports } from "../imports";
 import { IReferenceNode } from "./referenceNode";
 import { TreeUtils } from "./treeUtils";
 
+export type ReferenceType =
+  | "type annotation"
+  | "definition"
+  | "reference"
+  | "exposing"
+  | "import";
 export class References {
   public static find(
     definitionNode: IReferenceNode | undefined,
     forest: IForest,
     imports: IImports,
-  ): Array<{ node: SyntaxNode; uri: string }> {
-    const references: Array<{ node: SyntaxNode; uri: string }> = [];
+  ): Array<{ node: SyntaxNode; uri: string; type: ReferenceType }> {
+    const references: Array<{
+      node: SyntaxNode;
+      uri: string;
+      type: ReferenceType;
+    }> = [];
 
     if (definitionNode) {
       const refSourceTree = forest.getByUri(definitionNode.uri);
@@ -25,6 +35,7 @@ export class References {
             if (annotationNameNode && refSourceTree.writable) {
               references.push({
                 node: annotationNameNode,
+                type: "type annotation",
                 uri: definitionNode.uri,
               });
             }
@@ -36,6 +47,7 @@ export class References {
               if (refSourceTree.writable) {
                 references.push({
                   node: functionNameNode,
+                  type: "definition",
                   uri: definitionNode.uri,
                 });
               }
@@ -56,7 +68,11 @@ export class References {
               if (localFunctions && refSourceTree.writable) {
                 references.push(
                   ...localFunctions.map(node => {
-                    return { node, uri: definitionNode.uri };
+                    return {
+                      node,
+                      type: "reference" as ReferenceType,
+                      uri: definitionNode.uri,
+                    };
                   }),
                 );
               }
@@ -79,6 +95,7 @@ export class References {
                   if (exposedNode && refSourceTree.writable) {
                     references.push({
                       node: exposedNode,
+                      type: "exposing",
                       uri: definitionNode.uri,
                     });
                   }
@@ -113,6 +130,7 @@ export class References {
                             if (exposedNode) {
                               references.push({
                                 node: exposedNode,
+                                type: "import",
                                 uri,
                               });
                             }
@@ -126,7 +144,11 @@ export class References {
                             if (functions) {
                               references.push(
                                 ...functions.map(node => {
-                                  return { node, uri };
+                                  return {
+                                    node,
+                                    type: "reference" as ReferenceType,
+                                    uri,
+                                  };
                                 }),
                               );
                             }
@@ -150,6 +172,7 @@ export class References {
               if (refSourceTree.writable) {
                 references.push({
                   node: typeOrTypeAliasNameNode,
+                  type: "definition",
                   uri: definitionNode.uri,
                 });
               }
@@ -161,7 +184,11 @@ export class References {
               if (localFunctions && refSourceTree.writable) {
                 references.push(
                   ...localFunctions.map(node => {
-                    return { node, uri: definitionNode.uri };
+                    return {
+                      node,
+                      type: "reference" as ReferenceType,
+                      uri: definitionNode.uri,
+                    };
                   }),
                 );
               }
@@ -184,6 +211,7 @@ export class References {
                   if (exposedNode && refSourceTree.writable) {
                     references.push({
                       node: exposedNode,
+                      type: "exposed" as ReferenceType,
                       uri: definitionNode.uri,
                     });
                   }
@@ -220,6 +248,7 @@ export class References {
                             if (exposedNode) {
                               references.push({
                                 node: exposedNode,
+                                type: "import",
                                 uri,
                               });
                             }
@@ -233,7 +262,11 @@ export class References {
                             if (typeOrTypeAliasCalls) {
                               references.push(
                                 ...typeOrTypeAliasCalls.map(node => {
-                                  return { node, uri };
+                                  return {
+                                    node,
+                                    type: "reference" as ReferenceType,
+                                    uri,
+                                  };
                                 }),
                               );
                             }
@@ -253,6 +286,7 @@ export class References {
               if (refSourceTree.writable) {
                 references.push({
                   node: moduleNameNode,
+                  type: "definition",
                   uri: definitionNode.uri,
                 });
               }
@@ -275,7 +309,11 @@ export class References {
                           a.alias,
                         );
                         if (importNameNode) {
-                          references.push({ node: importNameNode, uri });
+                          references.push({
+                            node: importNameNode,
+                            type: "import",
+                            uri,
+                          });
                         }
                       });
                     }
@@ -289,6 +327,7 @@ export class References {
             if (refSourceTree.writable) {
               references.push({
                 node: definitionNode.node,
+                type: "definition",
                 uri: definitionNode.uri,
               });
 
@@ -307,7 +346,11 @@ export class References {
                   if (parameters) {
                     references.push(
                       ...parameters.map(node => {
-                        return { node, uri: definitionNode.uri };
+                        return {
+                          node,
+                          type: "reference" as ReferenceType,
+                          uri: definitionNode.uri,
+                        };
                       }),
                     );
                   }
@@ -322,6 +365,7 @@ export class References {
               if (refSourceTree.writable) {
                 references.push({
                   node: nameNode,
+                  type: "definition",
                   uri: definitionNode.uri,
                 });
                 const unionConstructorCalls = TreeUtils.findUnionConstructorCalls(
@@ -332,7 +376,11 @@ export class References {
                 if (unionConstructorCalls) {
                   references.push(
                     ...unionConstructorCalls.map(a => {
-                      return { node: a, uri: definitionNode.uri };
+                      return {
+                        node: a,
+                        type: "reference" as ReferenceType,
+                        uri: definitionNode.uri,
+                      };
                     }),
                   );
                 }
@@ -359,7 +407,11 @@ export class References {
                       if (unionConstructorCallsFromOtherFiles) {
                         references.push(
                           ...unionConstructorCallsFromOtherFiles.map(node => {
-                            return { node, uri };
+                            return {
+                              node,
+                              type: "reference" as ReferenceType,
+                              uri,
+                            };
                           }),
                         );
                       }
