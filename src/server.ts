@@ -33,6 +33,8 @@ import { DocumentEvents } from "./util/documentEvents";
 import { Settings } from "./util/settings";
 import { TextDocumentEvents } from "./util/textDocumentEvents";
 
+// readme not changed
+
 export interface ILanguageServer {
   readonly capabilities: InitializeResult;
   init(): Promise<void>;
