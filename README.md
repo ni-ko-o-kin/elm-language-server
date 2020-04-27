@@ -8,6 +8,7 @@ This is the language server implementation for the Elm programming language.
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
+- [readme changed](#readme-changed)
 - [Installation](#installation)
   - [Alternative: Compile and install from source](#alternative-compile-and-install-from-source)
   - [Alternative: Install with Nix](#alternative-install-with-nix)
