@@ -31,6 +31,8 @@ This is the language server implementation for the Elm programming language.
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
+## readme changed
+
 ## Installation
 
 Note for VSCode users: The [plugin](https://github.com/elm-tooling/elm-language-client-vscode) contains the language-server. No installation necessary.
